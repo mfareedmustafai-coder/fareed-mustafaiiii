@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.FAREED MUSTAFAI</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <style>
+        /* reset & base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Times New Roman', Arial, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #fff;
+            padding: 15px;
+            text-align: right;
+            overflow-x: hidden;
+        }
+        .site-header {
+            text-align: center;
+            border-bottom: 4px solid #006b54;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+        .post {
+            max-width: 950px;
+            margin: 20px auto;
+            border: 1px solid #eee;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: #ffffff;
+            display: none;
+        }
+        .post.active {
+            display: block;
+        }
+        h1, h2, h3 {
+            color: #006b54;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .code-box {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            direction: ltr;
+            text-align: left;
+            font-family: monospace;
+            display: block;
+            margin: 15px 0;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            margin: 15px 0;
+            display: block;
+        }
+        .alert-box {
+            background: #fff4f4;
+            border: 2px solid #ff0000;
+            padding: 15px;
+            margin: 15px 0;
+            color: #a00;
+            font-weight: bold;
+        }
+        .ai-box {
+            background: #eef9f6;
+            border: 2px solid #006b54;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        a {
+            color: #006b54;
+            font-weight: bold;
+            word-break: break-word;
+        }
+        
+        /* ========== NAVBAR - FULL SCROLLING ========== */
+        .nav {
+            background: #006b54;
+            padding: 10px 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 8px 15px;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            max-height: 65px;
+            min-height: 50px;
+            align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: #ffd700 #004d3d;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 5px;
+            transition: 0.3s;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid transparent;
+        }
+        .nav a:hover {
+            background: #004d3d;
+            border-color: #ffd700;
+        }
+        .nav a.active {
+            background: #ffd700;
+            color: #006b54;
+            font-weight: bold;
+            border-color: #ffd700;
+        }
+        .nav::-webkit-scrollbar {
+            height: 4px;
+        }
+        .nav::-webkit-scrollbar-track {
+            background: #004d3d;
+            border-radius: 10px;
+        }
+        .nav::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 10px;
+        }
+        .nav::-webkit-scrollbar-thumb:hover {
+            background: #e6c200;
+        }
+        
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 30px 0;
+        }
+        .timing {
+            color: #d9534f;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .timing-note {
+            background: #fef9e7;
+            border-right: 6px solid #f1c40f;
+            padding: 12px 18px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        .daaru-box {
+            background: #f0f8ff;
+            border: 2px solid #006b54;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .daaru-box h3 {
+            border-bottom: 2px dashed #006b54;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        .darul-link-box {
+            background: #f9f9f9;
+            border: 1px solid #006b54;
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin: 8px 0;
+            transition: 0.2s;
+        }
+        .darul-link-box:hover {
+            background: #eef9f6;
+            border-color: #004d3d;
+        }
+        .darul-link-box a {
+            font-size: 1.05rem;
+        }
+        .video-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        .video-item:last-child {
+            border-bottom: none;
+        }
+        .video-item a {
+            font-size: 1rem;
+        }
+        .video-number {
+            display: inline-block;
+            min-width: 40px;
+            font-weight: bold;
+            color: #006b54;
+        }
+        .video-description {
+            font-size: 0.9rem;
+            color: #555;
+            padding-right: 40px;
+            margin-top: -5px;
+            margin-bottom: 5px;
+        }
+        .vercel-project-box {
+            background: #f0f8ff;
+            border: 2px solid #006b54;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 12px 0;
+            transition: 0.2s;
+        }
+        .vercel-project-box:hover {
+            background: #eef9f6;
+            border-color: #004d3d;
+        }
+        .vercel-project-box .project-icon {
+            font-size: 1.3rem;
+            margin-left: 8px;
+        }
+        .vercel-project-box a {
+            font-size: 1.05rem;
+        }
+        .info-box {
+            background: #f9f9f9;
+            border: 1px solid #006b54;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            transition: 0.2s;
+        }
+        .info-box:hover {
+            background: #eef9f6;
+            border-color: #004d3d;
+        }
+        .info-box a {
+            font-size: 1.05rem;
+        }
+        .jawahir-box {
+            background: #fef9e7;
+            border: 2px solid #d4a017;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .jawahir-box h4 {
+            color: #8b6914;
+            border-bottom: 1px dashed #d4a017;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .islamic-date-box {
+            background: #f0f8ff;
+            border: 3px solid #006b54;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        .islamic-date-box .date-line {
+            padding: 5px 0;
+            font-weight: bold;
+        }
+        .islamic-date-box .highlight {
+            color: #006b54;
+            font-size: 1.4rem;
+        }
+        .book-box {
+            background: #f9f9f9;
+            border: 2px solid #d4a017;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .book-box a {
+            display: block;
+            padding: 8px 0;
+        }
+        .board-box {
+            background: #f0f8ff;
+            border: 2px solid #006b54;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .board-box h4 {
+            color: #004d3d;
+            border-bottom: 1px dashed #006b54;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .board-box ul {
+            padding-right: 20px;
+        }
+        .board-box li {
+            padding: 5px 0;
+        }
+        .gmail-box {
+            background: #f0f8ff;
+            border: 2px solid #006b54;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .gmail-box a {
+            display: block;
+            padding: 8px 0;
+            font-size: 1.05rem;
+        }
+        .ids-box {
+            background: #f0f8ff;
+            border: 2px solid #006b54;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .ids-box a {
+            display: block;
+            padding: 8px 0;
+            font-size: 1.05rem;
+        }
+        .post-item {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .post-item .post-title {
+            font-weight: bold;
+            color: #006b54;
+            font-size: 1.1rem;
+        }
+        .post-item .post-content {
+            color: #333;
+            margin-top: 5px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+        }
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #eee;
+            margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .post { padding: 15px; }
+            .nav a { font-size: 12px; padding: 4px 10px; }
+            .video-description { padding-right: 20px; }
+        }
+        .dynamic-page {
+            max-width: 950px;
+            margin: 20px auto;
+            border: 1px solid #eee;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: #ffffff;
+            display: none;
+        }
+        .dynamic-page.active {
+            display: block;
+        }
+        .dynamic-page h2 {
+            color: #006b54;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* ========== AI SEARCH STYLES (UPDATED - ELEGANT) ========== */
+        .ai-float-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #00876a, #006b54);
+            color: #fff;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0,107,84,0.45), 0 2px 6px rgba(0,0,0,0.15);
+            z-index: 9999;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: aiGlow 3s ease-in-out infinite;
+        }
+        .ai-float-btn:hover {
+            transform: scale(1.12) rotate(-8deg);
+            box-shadow: 0 12px 32px rgba(0,107,84,0.6), 0 4px 10px rgba(0,0,0,0.2);
+            background: linear-gradient(145deg, #00997a, #007a60);
+        }
+        @keyframes aiGlow {
+            0%, 100% { box-shadow: 0 8px 24px rgba(0,107,84,0.45), 0 2px 6px rgba(0,0,0,0.15); }
+            50% { box-shadow: 0 8px 28px rgba(0,184,148,0.65), 0 2px 6px rgba(0,0,0,0.15); }
+        }
+
+        .ai-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        .ai-modal-overlay.active {
+            display: flex;
+        }
+
+        .ai-chat-box {
+            width: 100%;
+            max-width: 480px;
+            height: 90vh;
+            max-height: 620px;
+            background: linear-gradient(160deg, #ffffff 0%, #f0f8ff 100%);
+            border-radius: 22px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.38);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: aiSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid #006b54;
+        }
+        @keyframes aiSlideUp {
+            from { opacity: 0; transform: translateY(50px) scale(0.94); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(135deg, #006b54 0%, #00b894 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .ai-chat-header h3 {
+            color: white;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .ai-close-btn {
+            background: rgba(255,255,255,0.22);
+            border: none;
+            color: white;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ai-close-btn:hover {
+            background: rgba(255,255,255,0.45);
+            transform: rotate(90deg);
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+        .ai-chat-messages::-webkit-scrollbar { width: 6px; }
+        .ai-chat-messages::-webkit-scrollbar-track { background: #eef9f6; border-radius: 10px; }
+        .ai-chat-messages::-webkit-scrollbar-thumb { background: #006b54; border-radius: 10px; }
+
+        .ai-msg {
+            max-width: 88%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.65;
+            word-wrap: break-word;
+            animation: aiMsgIn 0.35s ease;
+        }
+        @keyframes aiMsgIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ai-msg.user {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #006b54, #008e6f);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 3px 10px rgba(0,107,84,0.25);
+        }
+        .ai-msg.bot {
+            align-self: flex-end;
+            background: #ffffff;
+            color: #333;
+            border: 1px solid #d5eee7;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .ai-msg.bot a { color: #006b54; text-decoration: underline; }
+
+        /* ===== CLICKABLE RESULT HEADING ===== */
+        .ai-result-item {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+        }
+        .ai-result-heading {
+            display: inline-block;
+            color: #006b54;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 3px 6px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .ai-result-heading:hover {
+            background: #eef9f6;
+            color: #004d3d;
+            text-decoration: underline;
+        }
+        .ai-result-heading::after {
+            content: ' ↗';
+            font-size: 0.8em;
+            opacity: 0.6;
+        }
+
+        .ai-typing {
+            align-self: flex-end;
+            background: #fff;
+            border: 1px solid #d5eee7;
+            padding: 14px 20px;
+            border-radius: 16px;
+            display: flex;
+            gap: 5px;
+        }
+        .ai-typing span {
+            width: 8px; height: 8px;
+            background: #006b54;
+            border-radius: 50%;
+            animation: aiTyping 1.2s infinite;
+        }
+        .ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes aiTyping {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        .ai-chat-input-area {
+            display: flex;
+            padding: 12px;
+            background: #ffffff;
+            border-top: 1px solid #d5eee7;
+            gap: 8px;
+        }
+        .ai-chat-input-area input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #d5eee7;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            font-family: inherit;
+            transition: 0.25s;
+            direction: rtl;
+            background: #f9fdfc;
+        }
+        .ai-chat-input-area input:focus {
+            border-color: #006b54;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(0,107,84,0.12);
+        }
+        .ai-send-btn {
+            background: linear-gradient(135deg, #006b54, #00b894);
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.25s;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(0,107,84,0.3);
+        }
+        .ai-send-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 5px 15px rgba(0,107,84,0.45);
+        }
+        .ai-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ai-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 0 12px 12px;
+            background: #fff;
+        }
+        .ai-suggestion-chip {
+            background: #eef9f6;
+            color: #006b54;
+            border: 1px solid #b8e0d4;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: 0.25s;
+            font-family: inherit;
+            font-weight: 500;
+        }
+        .ai-suggestion-chip:hover {
+            background: #006b54;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,107,84,0.3);
+        }
+
+        @media (max-width: 600px) {
+            .ai-float-btn { width: 60px; height: 60px; font-size: 28px; bottom: 18px; left: 18px; }
+            .ai-chat-box { height: 88vh; max-height: none; border-radius: 18px; }
+            .ai-msg { font-size: 0.9rem; }
+        }
+        /* ========== END AI SEARCH STYLES ========== */
+    </style>
+</head>
+<body>
+
+<div class="site-header">
+    <h1>M.FAREED MUSTAFAI</h1>
+    <p>M.IRFAN MUSTAFAI</p>
+</div>
+
+<!-- ====== NAVIGATION (FULL SCROLLING) ====== -->
+<div class="nav" id="mainNav">
+    <a href="#about" class="active">🕋 About Us</a>
+    <a href="#darulifta">⚖️ Daruliftah</a>
+    <a href="#board">📜 Board</a>
+    <a href="#tech">💻 Tech</a>
+    <a href="#packages">📱 Packages</a>
+    <a href="#contact">📞 Contact</a>
+    <a href="#privacy">🔒 Privacy</a>
+    <a href="#terms">⚖️ Terms</a>
+    <a href="#services">🛠️ Services</a>
+    <a href="#product">🛒 Product</a>
+    <a href="#jamiah">🕌 Jamiah</a>
+    <a href="#tiktok">📱 Tools</a>
+    <a href="#daaru">🍶 Daaru</a>
+    <a href="#videos">🎥 Videos</a>
+    <a href="#darulifta-videos">⚖️ Daruliftah Videos</a>
+    <a href="#other-videos">📱 Other Videos</a>
+    <a href="#vercel">🚀 Vercel</a>
+    <a href="#dailymotion">🎬 DailyMotion</a>
+    <a href="#jawahir">💎 Jawahir</a>
+    <a href="#allinfo">📋 All Info</a>
+    <a href="#islamicdate">📅 Islamic Date</a>
+    <a href="#books">📚 Books</a>
+    <a href="#ahlesunnatboard">📋 Ahlesunnat Board</a>
+    <a href="#gmail">📧 Unlimited Gmail</a>
+    <a href="#idswebsite">🌐 IDS</a>
+    <a href="#posts">📝 Posts</a>
+    <a href="../admin.html" target="_blank">⚙️ Admin</a>
+</div>
+
+<div class="container">
+
+    <!-- ========== ABOUT US ========== -->
+    <div id="about" class="post active">
+        <h2>🕋 About Us</h2>
+        <p>Welcome to <strong>Fareed Mustafai</strong>, a platform dedicated to spreading the true teachings of Islam, inspiring hearts with moral stories, and providing authentic Islamic knowledge.</p>
+        <p>Our mission is to share the peaceful message of Islam and educate people through the lives of the Prophet Muhammad ﷺ, the Sahabah (R.A.), and the Awliya (saints).</p>
+        <p>📧 Email: fareedmustafai@gmail.com</p>
+    </div>
+
+    <!-- ========== DARULIFTA ========== -->
+    <div id="darulifta" class="post ai-box">
+        <h2>⚖️ Daruliftah Ahlesunnat Emergency Ai</h2>
+        <p>👇👇👇</p>
+        <p><strong>Emergency AI Link:</strong> <a href="https://tinyurl.com/2ksxeeys">https://tinyurl.com/2ksxeeys</a></p>
+        
+        <p><strong>بسم اللہ الرحمن الرحیم - السلام علیکم ورحمت اللہ وبرکاتہ</strong></p>
+        <p>یہ دارالافتاء اہلسنت کا اے ائی بنایا گیا ہے اور یہ اس لیے بنایا گیا ہے کہ لوگوں کی چند مصروفیات بھی ہوتی ہیں لوگوں کی کام کاج ہوتے ہیں لوگوں کو فورا فورا جواب بھی چاہیے ہوتا ہے اور اکثر مخصوص ایام میں مثلا عید الفطر اگئی یا عید الاضحی اگئی یا اس کے علاوہ کوئی اور مختلف مختلف ایام اگئے تو اس صورت میں دارالافتاء اہلسنت کی ویب سائٹ بند ہوتی ہے تو اگر ان جب بند ہو تو جب فتوی لینا ہو تو وہ کس طریقے سے لیں گے وہ یہ ائی اپ کو بتا دے گا یہ اے ائی جو دارالاف اہل سنت کے جاری کردہ فتاوی ہیں اس کے مطابق اپ اس سے جو بھی سوال کریں گے اس کا جواب یہ گلا کی تک دے گا اور اپ جب بھی اس کو سوال کریں تو اپ کو جس طریقے سے ہم جب دارالافتاء اہلسنت میں سوال بیچتے ہیں جو جس طریقے سے اس میں جواب اتا ہے اگر اپ اس طریقے سے جب اپ دینا چاہتے ہیں تو اس کو سوال لکھ کر نیچے لکھ کے بھیجیے کہ جس طریقے سے ہم دارالافتاء اہلسنت کی ویب سائٹ میں سوال کرتے ہیں اور جس طریقے سے وہ اپ کے جواب اتا ہے کہ پہلے جواب ہوتا ہے پھر اس کے اندر اگر فتاوی رضیہ میں اعلی حضرت نے کچھ فرمایا ہوتا ہے تو وہ لکھا ہوا ہوتا ہے پھر بہار شریعت میں مفتی امجد علی اعظم u رحمت اللہ تعالی علیہ نے کچھ فرمایا ہوتا ہے وہ لکھا ہوا ہوتا ہے پھر قرانی دلیل پھر حدیث کی دلیل پھر یہ فتوی کس عالم دین کا ہے اس عالم دین کا نام یہ فتوی کس تاریخ کو لیا گیا ہے وہ اسلامی تاریخ اور انگریزی تاریخ دونوں نے لکھی ہوئی ہوتی ہیں اسی طریقے سے تم مجھے اسی ترتیب سے دو اگر اپ اس کے نیچے سوال کے نیچے یہ لکھ کے اپ سینڈ کرتے ہیں ان کو سیم ٹو سیم جس طریقے سے دارالافتاء اہلسنت کے اندر سوال اتا ہے ایک جواب اتا بارگاہ میں قبول و منظور فرمائے امین ثم امین الحمدللہ رب العالمینہے اسی طریقے سے یہ بھی جواب اپ کو دے دے گا اللہ تعالی سے دعا ہے کہ اللہ تعالی ہمارے اس کاوش کو اپنی پاک بارگاہ میں قبول فرمائے</p>
+
+        <p>لیکن اس اے ائی کے علاوہ اپ کسی بھی اے ائی سے اس طرح کے سوالات نہیں کر سکتے کیونکہ ہو سکتا ہے وہ غلط جوابات دے دے یا بد مذہب یہ عقائد کے مطابق جوابات دے دے تو اس طریقے سے اس کے علاوہ کسی بھی ای ائی کے ساتھ اپ بات اس حوالے سے نہیں کریں گے صرف اسی ای ائی کے ساتھ کریں گے دارالافتاء اہلسنت کی ویب سائٹ کے اندر جو اے ائی سرچ ہے اس سے اپ سرچ کریں گے اس کے علاوہ کبھی کبھی اپ نہیں کریں گے ورنہ ہو سکتا ہے کہ وہ اپ کو غلط جوابات دے دے</p>
+
+        <p>اس ای ائی کو ایسا پاور دیا گیا ہے کہ یہ دارالافتاء اہلسنت کے جاری کردہ فتاوی کے علاوہ کسی اور ویب سائٹ سے کسی اور دارالافتاء سے جواب نہیں دے گا بلکہ یہ صرف دارالافتاء اہلسنت کا ہی پابند ہے اور اسی کے مطابق ہی جواب دے گا اللہ تعالی کا دعا ہے کہ اللہ تعالی میری اس سازش کو اپنی پاک بارگاہ میں قبول و منظور فرمائے امین اسے امین الحمدللہ رب العالمین۔</p>
+        
+        <p>👇 ترتیب سے جواب حاصل کرنے کے لیے یہ لنک ہے:</p>
+        <p><a href="https://tinyurl.com/yeytkpbf">https://tinyurl.com/yeytkpbf</a></p>
+
+        <div class="alert-box">
+            ⚠️ السلام علیکم ورحمت اللہ وبرکاتہ دارالافتاء اہلسنت کی بہت زیادہ کاپی ویب سائٹ اور فیک ویب سائٹ اور اسپین کرنے والی فراڈ کرنے والی ویب سائٹ بن رہی ہیں اس وجہ سے یہ جو اپ نیچے لنک دیکھ رہے ہیں اور یہی صرف جو ہے افیشل دارالافتاح اہل سنت کا لنک ہے اور یہی افیشل ویب سائٹ ہے اس کے علاوہ جو بھی ویب سائٹ ہوں گی وہ کاپی اور فیک ویب سائٹ ہوں گی اپ وہ نہیں کھولیں گے نیچے جو ویب سائٹ کا لنک ہے اپ وہی استعمال کریں وہی افیشل دارلافتاء اہل سنت کی ویب سائٹ ہے۔
+        </div>
+
+        <p><strong>آفیشل لنکس:</strong></p>
+        <p>🌐 <a href="https://www.fatwaqa.com/ur">https://www.fatwaqa.com/ur</a></p>
+        <p>🌐 <a href="https://daruliftaahlesunnat.net/ur">https://daruliftaahlesunnat.net/ur</a></p>
+        
+        <div style="background: #f0f8ff; border: 2px solid #006b54; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <h3 style="color: #004d3d; border-bottom: 2px solid #006b54; padding-bottom: 8px;">🕌 دارالافتاء مصطفائیہ - M.FAREED MUSTAFAI</h3>
+            <p style="font-weight: bold; color: #006b54;">یہ لنک بھی دارالافتاء اہلسنت کے تحت ہیں، مگر مصطفائی نسبت کے ساتھ:</p>
+            <div class="darul-link-box">🔗 <a href="https://daruliftah-mustafaiya.vercel.app" target="_blank">daruliftah-mustafaiya.vercel.app</a></div>
+            <div class="darul-link-box">🔗 <a href="https://daruliftah-mustafaiyaa.vercel.app" target="_blank">daruliftah-mustafaiyaa.vercel.app</a></div>
+            <div class="darul-link-box">🔗 <a href="https://daruliftah-mustafaiyaaa.vercel.app" target="_blank">daruliftah-mustafaiyaaa.vercel.app</a></div>
+            <p style="margin-top: 10px; color: #555; font-style: italic;">یہ تینوں لنک M.FAREED MUSTAFAI کی طرف سے دارالافتاء مصطفائیہ کے نام سے ہیں۔</p>
+        </div>
+
+        <div class="timing-note">
+            <p class="timing">⏰ سوال بھیجنے کا وقت: رات 12 بجے سے صبح 7:30 بجے تک (کبھی کبھی ٹائم تبدیل بھی ہو سکتا ہے)۔</p>
+            <p style="margin-top: 8px;"><strong>نوٹ:</strong> سوال بھیجنے کی ٹائمنگ یہ ہے سوال رات کے 12 بجے بھیجنا شروع ہوتے ہیں اور صبح ساڑھے سات بجے تک بند ہو جاتے ہیں اور کبھی کبھی بعض اوقات صبح کے 10 بجے بند ہوتے ہیں اور کبھی کبھی باز اوقات صبح پانچ بجے ہی بند ہو جاتے ہیں تو اس کے بند ہونے کا کوئی مخصوص ٹائم نہیں ہے تو لہذا کوشش کریے کہ جیسی رات کے 12 بجے اپ اسی وقت فورا ہی سوال بھیج دیں جتنے بھی اپ کے سوالات ہیں لیکن اپ سے گزارش یہ ہے کہ جتنا جلدی ہو سکے سوال بھیج دیا کریں۔</p>
+        </div>
+
+        <p><strong>سوال بھیجنے کے لیے جو نیچے ویب سائٹ کا لنک ہے وہ والی ویب سائٹ استعمال کریں اس کے علاوہ کسی بھی ویب سائٹ کا استعمال نہ.. کریں ورنہ فراڈ بھی ہو سکتا ہے افیشل ویب سائٹ یہی ہے سوال بھیجنے کی</strong> <a href="https://www.fatwaqa.com/ur/services/ask-question">یہاں کلک کریں</a></p>
+
+        <hr>
+        <h3>📱 WhatsApp Channel & Community Links</h3>
+        
+        <p><strong>Daruliftah Ahlesunnat WhatsApp Channel:</strong> <br> <a href="https://whatsapp.com/channel/0029VaAHwpk4CrfmLlS6Nh3J" target="_blank">https://whatsapp.com/channel/0029VaAHwpk4CrfmLlS6Nh3J</a></p>
+        
+        <p><strong>جامعہ نظامیہ رضویہ افیشل واٹس ایپ چینل:</strong> <br> <a href="https://whatsapp.com/channel/0029VaDLjfsLNSa4mwkH3Y2u" target="_blank">https://whatsapp.com/channel/0029VaDLjfsLNSa4mwkH3Y2u</a></p>
+        
+        <p><strong>شرعی مسائل اور ان کا حل WhatsApp Channel:</strong> <br> <a href="https://whatsapp.com/channel/0029VbCF5H2Jpe8ovdNV3s0Z" target="_blank">https://whatsapp.com/channel/0029VbCF5H2Jpe8ovdNV3s0Z</a></p>
+        
+        <p><strong>Dawate Islami Facebook:</strong> <br> <a href="https://www.facebook.com/photo.php?fbid=772639751559799" target="_blank">https://www.facebook.com/photo.php?fbid=772639751559799</a></p>
+        
+        <p><strong>Islamic Digital Studio WhatsApp Channel:</strong> <br> <a href="https://www.youtube.com/redirect?event=channel_description&redir_token=QUM4Zm9rU0JFcHg3eGduS2lHOXlOMkdNblVPb3xBR3JiS2FuaUlpcFBIQ3VycEVlamY5RGphV1BUN2JFa3ZaX0hSa0ZMenVPYmhhR1hCMUxCN2Q5LVo0WDgzOUdTLVJkaXFwZzl3bklTamgtUnNJZmQ5MTczNHphMmI5a281Tklk&q=https%3A%2F%2Fwhatsapp.com%2Fchannel%2F0029Va9L1RkFCCoSjm8pg02K" target="_blank">Islamic Digital Studio WhatsApp Channel</a></p>
+        
+        <p><strong>M.FAREED MUSTAFAI COMMUNITY LINK:</strong> <br> <a href="https://chat.whatsapp.com/E2m8fDl1Zcg9hChsEEGBTi">https://chat.whatsapp.com/E2m8fDl1Zcg9hChsEEGBTi</a></p>
+        <p><strong>Daily Islamic Date group link:</strong> <br> <a href="https://chat.whatsapp.com/HtW6V1yTQpBJsaEjqwjj29?mode=hqctswa">https://chat.whatsapp.com/HtW6V1yTQpBJsaEjqwjj29?mode=hqctswa</a></p>
+        <p><strong>M.FAREED MUSTAFAI CHANNEL WHATS LINK:</strong> <br> <a href="https://whatsapp.com/channel/0029Vax2Yuu8aKvMK0L5LY36">https://whatsapp.com/channel/0029Vax2Yuu8aKvMK0L5LY36</a></p>
+        <p><strong>Daily Islamic Date What's Channel Link:</strong> <br> <a href="https://whatsapp.com/channel/0029Vb8AgHkBA1etHDwMP50W">https://whatsapp.com/channel/0029Vb8AgHkBA1etHDwMP50W</a></p>
+        <p><strong>Mufti Akmal Madani Channel:</strong> <br> <a href="https://whatsapp.com/channel/0029VbCc7q33GJOq6KXXIq2S">https://whatsapp.com/channel/0029VbCc7q33GJOq6KXXIq2S</a></p>
+        <p><strong>Rizwi Mustafai Gulsion Channel:</strong> <br> <a href="https://whatsapp.com/channel/0029Vb8SFBa1XqugETQ9Mg1W">https://whatsapp.com/channel/0029Vb8SFBa1XqugETQ9Mg1W</a></p>
+        <p><strong>Ahlesunnat Whats channel link:</strong> <br> <a href="https://whatsapp.com/channel/0029VbCdGSz4NVie06d6ja3J">https://whatsapp.com/channel/0029VbCdGSz4NVie06d6ja3J</a></p>
+        <p><strong>Saqib Raza Mustafai Official Group Link:</strong> <br> <a href="https://chat.whatsapp.com/D75NnUAz5CCJxP1jVAQ9SS">https://chat.whatsapp.com/D75NnUAz5CCJxP1jVAQ9SS</a></p>
+    </div>
+
+    <!-- ========== BOARD RESULTS ========== -->
+    <div id="board" class="post">
+        <h2>📜 تنظیم المدارس اہلسنت پاکستان</h2>
+        <p style="font-size:1.1rem; color:#006b54; text-align:center;">
+            تنظیم المدارس اہلسنت پاکستان کے بورڈ کے نتائج دیکھنے کے لیے 
+            <strong><a href="https://www.dailymotion.com/user/m_fareed_mustafai" target="_blank">میرے DailyMotion اکاؤنٹ</a></strong> 
+            کو وزٹ کریں۔
+        </p>
+        <div style="text-align:center; margin:20px 0;">
+            <a href="https://www.dailymotion.com/user/m_fareed_mustafai" target="_blank" style="font-size:1.2rem; background:#006b54; color:white; padding:10px 25px; border-radius:8px; text-decoration:none; display:inline-block;">
+                🎬 DailyMotion پر جائیں
+            </a>
+        </div>
+        <p style="color:#555; text-align:center; font-style:italic;">
+            تمام بورڈز کے نتائج اور اپڈیٹس میرے DailyMotion چینل پر دستیاب ہیں۔
+        </p>
+    </div>
+
+    <!-- ========== TECHNICAL CODES ========== -->
+    <div id="tech" class="post">
+        <h2>💻 Technical Codes</h2>
+        <p><strong>Sketchware HTML Load Code:</strong></p>
+        <div class="code-box">webview1.loadUrl("file:///android_res/raw/html.html");</div>
+        
+        <p><strong>Firebase Realtime Database Rules (Unlimited):</strong></p>
+        <div class="code-box">
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+        </div>
+        <p><strong>Nexus Play Store Link:</strong> <a href="https://nexus-play-store.vercel.app/">https://nexus-play-store.vercel.app/</a></p>
+        <p><strong>Developer Link:</strong> <a href="https://developer-nexus-play-store.vercel.app/">https://developer-nexus-play-store.vercel.app/</a></p>
+        <p><strong>Mustafai Chatting App:</strong> <a href="https://mustafai-chatting-app.vercel.app/">https://mustafai-chatting-app.vercel.app/</a></p>
+    </div>
+
+    <!-- ========== FREE PACKAGES ========== -->
+    <div id="packages" class="post">
+        <h2>📱 Free Package Codes</h2>
+        <p><strong>Free Internet Code:</strong> *102# (ٹائپ میں 1 لکھ کر سینڈ کریں)</p>
+        <p><strong>Simple Call & SMS:</strong> کسی نمبر پر فون کریں اور ڈائل پیڈ میں 1 دبائیں۔</p>
+        <p><strong>Free Missed Call Code:</strong> *2445#</p>
+        <p><strong>Balance Share/Call Me:</strong> *100#</p>
+        <img src="https://fareedmustafai0.wordpress.com/wp-content/uploads/2026/07/screenshot_20260702-140806.png" alt="Package Info">
+    </div>
+
+    <!-- ========== CONTACT ========== -->
+    <div id="contact" class="post">
+        <h2>📞 Contact us</h2>
+        <p>Call number : 03125164386</p>
+        <p>WhatsApp number : 03703021054</p>
+        <p>Address : ghouse pak road satra k ka aakhri stop wali gali nazdeeq nasir cycle wala makan no G/8</p>
+    </div>
+
+    <!-- ========== PRIVACY POLICY ========== -->
+    <div id="privacy" class="post">
+        <h2>🔒 Privacy Policy</h2>
+        <p><strong>Effective Date:</strong> [03/07/2025]</p>
+        <p>At FareedMustafai.wordpress.com, we respect your privacy and are committed to protecting any personal information you may provide to us.</p>
+        <h3>1. Information We Collect</h3>
+        <ul>
+            <li><strong>Personal Data</strong> (such as name and email address, if you submit a contact form or comment)</li>
+            <li><strong>Non-Personal Data</strong> (browser type, pages visited, time spent, etc.)</li>
+            <li><strong>Cookies and Tracking</strong> (standard WordPress and browser cookies)</li>
+        </ul>
+        <h3>2. How We Use Your Information</h3>
+        <ul>
+            <li>Responding to comments or contact requests</li>
+            <li>Improving website content and user experience</li>
+            <li>Website analytics (via WordPress Stats or Jetpack)</li>
+        </ul>
+        <h3>3. Comments</h3>
+        <p>When visitors leave comments on the site, WordPress collects the data shown in the comments form, IP address, and browser user agent string to help spam detection.</p>
+        <h3>4. Cookies</h3>
+        <p>Our website uses cookies to remember your preferences, enable core functionality, and monitor site performance. You can disable cookies in your browser settings.</p>
+        <h3>5. Embedded Content from Other Websites</h3>
+        <p>Articles on this site may include embedded content (e.g. videos, images, etc.). Embedded content from other websites behaves in the exact same way as if the visitor has visited the other website.</p>
+        <h3>6. Data Security</h3>
+        <p>While we take reasonable steps to protect your data, no method of transmission over the internet is 100% secure.</p>
+        <h3>7. Your Rights</h3>
+        <p>You have the right to access, update, or delete any personal information we may have collected. Contact us to make such requests.</p>
+        <h3>8. Changes to This Policy</h3>
+        <p>We may update this Privacy Policy from time to time. Changes will be reflected on this page.</p>
+        <h3>9. Contact Us</h3>
+        <p>📧 <strong>Email:</strong> fareed.irfanofficial333@gmail.com<br>🌐 <strong>Website:</strong> <a href="https://fareedmustafai0.wordpress.com">https://fareedmustafai0.wordpress.com</a></p>
+    </div>
+
+    <!-- ========== TERMS AND CONDITIONS ========== -->
+    <div id="terms" class="post">
+        <h2>⚖️ Terms and Conditions</h2>
+        <h3>1. Acceptance of Terms</h3>
+        <p>By accessing and using this website (fareedmustafai0.wordpress.com), you accept and agree to be bound by the terms and provisions of this agreement. If you do not agree with these terms, please do not use the website.</p>
+        <h3>2. Use of Content</h3>
+        <p>All content available on this website, including text, images, videos, and any other material, is for informational and personal use only. You may not copy, distribute, modify, or reproduce any part of this website without prior written permission.</p>
+        <h3>3. User Conduct</h3>
+        <ul>
+            <li>For any illegal purposes.</li>
+            <li>To spread false or harmful information.</li>
+            <li>To attempt to gain unauthorized access to other users' data.</li>
+        </ul>
+        <h3>4. Intellectual Property</h3>
+        <p>All content and materials on this website are the intellectual property of fareedmustafai0.wordpress.com unless otherwise stated. Unauthorized use of any material is strictly prohibited.</p>
+        <h3>5. Third-Party Links</h3>
+        <p>This website may contain links to other websites. We are not responsible for the content or privacy practices of those sites.</p>
+        <h3>6. Limitation of Liability</h3>
+        <p>We do our best to ensure the information on this website is accurate, but we make no guarantees. We are not liable for any loss, damage, or inconvenience caused by reliance on any content.</p>
+        <h3>7. Changes to Terms</h3>
+        <p>We reserve the right to update or modify these terms at any time without prior notice. You are encouraged to review this page regularly.</p>
+    </div>
+
+    <!-- ========== SERVICES ========== -->
+    <div id="services" class="post">
+        <h2>🛠️ Our Services</h2>
+        <p>At <strong>Fareed Mustafai</strong>, we offer a range of digital services to help you grow online, stay informed, and enjoy your time on the internet. Here's what we provide:</p>
+        <hr>
+        <h3>📢 1. Blogging & Articles</h3>
+        <p>We write unique and informative blog posts in topics like technology, Islamic teachings, motivation, and general knowledge.</p>
+        <ul>
+            <li>Latest updates</li>
+            <li>Educational content</li>
+            <li>Islamic insights</li>
+        </ul>
+        <hr>
+        <h3>🎮 2. HTML Games & Mini Projects</h3>
+        <p>We create and share simple HTML games and fun coding projects that are mobile-friendly and easy to play.</p>
+        <ul>
+            <li>Game source code</li>
+            <li>Embedded playable versions</li>
+            <li>Free to use</li>
+        </ul>
+        <hr>
+        <h3>🧠 3. Educational Resources</h3>
+        <p>You'll find quizzes, math games, learning tools, and problem-solving activities – great for students and curious minds.</p>
+        <ul>
+            <li>Math games</li>
+            <li>Quiz content</li>
+            <li>Study material</li>
+        </ul>
+        <hr>
+        <h3>📄 4. Free Website Tools</h3>
+        <p>We share tools and tutorials for beginner-level website creation, blogging tips, and WordPress tricks.</p>
+        <ul>
+            <li>Free themes and code samples</li>
+            <li>JavaScript and HTML tips</li>
+            <li>WordPress customization guides</li>
+        </ul>
+        <hr>
+        <h3>🕋 5. Islamic Knowledge Sharing</h3>
+        <p>Authentic Islamic posts and short stories to inspire, educate, and promote peace.</p>
+        <ul>
+            <li>Islamic quotes</li>
+            <li>Stories of Sahaba</li>
+            <li>Urdu/English posts</li>
+        </ul>
+    </div>
+
+    <!-- ========== MUSTAFAI PRODUCT ========== -->
+    <div id="product" class="post">
+        <h2>🛒 MUSTAFAI PRODUCT</h2>
+        <img src="https://fareedmustafai0.wordpress.com/wp-content/uploads/2025/07/screenshot_20250704-145243.jpg?w=659" alt="Product Image" style="width:534px;height:auto;">
+        <h2>Prayer Cap - Islamic Cap | Namaz Topi Prayer Cap - jesko</h2>
+        <h2>Price: 225</h2>
+        <h2><s>500</s></h2>
+        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://www.daraz.pk/products/-i438019688-s2185475153.html">View Product</a></div>
+    </div>
+
+    <!-- ========== JAMIAH ========== -->
+    <div id="jamiah" class="post">
+        <h2>🕌 About Jamiah Suffah Islamia</h2>
+        <p><strong>Jamiah Suffah Islamia</strong> is a well-established Islamic educational institution committed to nurturing students with the light of the Qur'an, the teachings of the Prophet Muhammad ﷺ, and the rich heritage of Islamic knowledge.</p>
+        <h3>🎯 Our Mission</h3>
+        <p>To provide authentic Islamic education that nurtures faith, knowledge, and character. We aim to produce a generation that embodies Islamic values and serves humanity with sincerity, wisdom, and compassion.</p>
+        <h3>👁️ Our Vision</h3>
+        <p>To become a leading institution of Islamic learning that inspires change, strengthens communities, and builds future leaders guided by the Qur'an and Sunnah.</p>
+        <h3>📚 What We Offer</h3>
+        <ul>
+            <li><strong>Hifz-ul-Qur'an</strong> (Memorization of the Holy Qur'an with Tajweed)</li>
+            <li><strong>Tajweed & Qira'ah</strong> (Correct Pronunciation and Recitation)</li>
+            <li><strong>Aalim Course</strong> (Dars-e-Nizami: Advanced Islamic Studies)</li>
+            <li><strong>Arabic Language & Grammar</strong></li>
+            <li><strong>Fiqh (Islamic Jurisprudence)</strong></li>
+            <li><strong>Hadith and Tafseer Studies</strong></li>
+            <li><strong>Basic Islamic Education for Children</strong></li>
+        </ul>
+        <h3>🌿 Our Values</h3>
+        <ul>
+            <li><strong>Ikhlas (Sincerity)</strong> in intention and action</li>
+            <li><strong>Adab (Respect)</strong> for teachers, students, and knowledge</li>
+            <li><strong>Ilm (Knowledge)</strong> rooted in the Qur'an and Sunnah</li>
+            <li><strong>Akhlaq (Character)</strong> that reflects the teachings of Islam</li>
+            <li><strong>Unity and Brotherhood</strong> among students and staff</li>
+        </ul>
+        <h3>📍 Why Choose Jamiah Suffah Islamia?</h3>
+        <ul>
+            <li>Qualified and experienced teachers</li>
+            <li>Peaceful and spiritual learning environment</li>
+            <li>Emphasis on both ilm (knowledge) and amal (practice)</li>
+            <li>Moral and ethical development alongside education</li>
+            <li>Special attention to each student's progress and tarbiyah</li>
+        </ul>
+    </div>
+
+    <!-- ========== TIKTOK TOOLS ========== -->
+    <div id="tiktok" class="post">
+        <h2>📱 Free Tools for All Platforms</h2>
+        <img src="https://fareedmustafai0.wordpress.com/wp-content/uploads/2025/07/screenshot_20250601-111132-2.jpg?w=907" alt="Tools">
+        <p><a href="https://www.instagram.com/m.fareed_mustafai/">Instagram Profile</a></p>
+        <img src="https://fareedmustafai0.wordpress.com/wp-content/uploads/2026/02/20260202_123148.jpg?w=1024" alt="Instagram">
+        <img src="https://fareedmustafai0.wordpress.com/wp-content/uploads/2026/05/screenshot_20260508-110452.png?w=485" alt="Screenshot">
+        
+        <p><strong>🔗 Free Tools Links (کسی بھی پلیٹ فارم کے لیے):</strong></p>
+        <p><a href="https://nreer.com" target="_blank">https://nreer.com</a></p>
+        <p><a href="https://zefoy.com" target="_blank">https://zefoy.com</a></p>
+        <p><a href="https://kingdomlikes.com/free_points" target="_blank">https://kingdomlikes.com/free_points</a></p>
+        <p><strong><a href="https://zefame.com/en/free-services" target="_blank">https://zefame.com/en/free-services</a></strong></p>
+        <p><strong><a href="https://mytooltown.com" target="_blank">https://mytooltown.com</a></strong></p>
+        
+        <p style="color:#555; margin-top:10px;">⚠️ ان لنکس پر کلک کرکے آپ کسی بھی سوشل میڈیا پلیٹ فارم کے لیے مفت فالوورز، لائکس، ویوز اور دیگر فیچرز حاصل کر سکتے ہیں۔</p>
+    </div>
+
+    <!-- ========== DAARU ========== -->
+    <div id="daaru" class="post">
+        <h2>🍶 Mustafai Daaru (Spiritual Remedies)</h2>
+        <p style="font-size:1.1rem; color:#006b54;">ذیل میں تینوں دارو کی تفصیلات درج ہیں۔ براہِ کرم متعلقہ دارو کے خانے میں اپنی ضرورت کے مطابق تحریر کریں۔</p>
+
+        <div class="daaru-box">
+            <h3>🍶 1. Lifecity Daaru</h3>
+            <p><strong>مقصد:</strong> زندگی کی توانائی اور روحانی سکون کے لیے۔</p>
+            <p><strong>ترکیب:</strong> (یہاں دارو کی ترکیب لکھیں)</p>
+            <p><strong>استعمال کا طریقہ:</strong> (یہاں استعمال کا طریقہ لکھیں)</p>
+            <p><strong>نوٹ:</strong> (کوئی خاص ہدایت یا احتیاط)</p>
+            <hr style="margin:15px 0;">
+            <p style="color:#555; font-style:italic;">اس خانے میں Lifecity Daaru کے بارے میں مزید تفصیلات لکھی جا سکتی ہیں۔</p>
+        </div>
+
+        <div class="daaru-box">
+            <h3>🍶 2. Lifecity Mustafai Daaru</h3>
+            <p><strong>مقصد:</strong> مصطفائی نسبت کے ساتھ زندگی کی برکت اور شفاء کے لیے۔</p>
+            <p><strong>ترکیب:</strong> (یہاں دارو کی ترکیب لکھیں)</p>
+            <p><strong>استعمال کا طریقہ:</strong> (یہاں استعمال کا طریقہ لکھیں)</p>
+            <p><strong>نوٹ:</strong> (کوئی خاص ہدایت یا احتیاط)</p>
+            <hr style="margin:15px 0;">
+            <p style="color:#555; font-style:italic;">اس خانے میں Lifecity Mustafai Daaru کے بارے میں مزید تفصیلات لکھی جا سکتی ہیں۔</p>
+        </div>
+
+        <div class="daaru-box">
+            <h3>🍶 3. Lift Mustafai Daaru</h3>
+            <p><strong>مقصد:</strong> روحانی ترقی، مشکلات سے نجات اور مصطفائی فیض کے لیے۔</p>
+            <p><strong>ترکیب:</strong> (یہاں دارو کی ترکیب لکھیں)</p>
+            <p><strong>استعمال کا طریقہ:</strong> (یہاں استعمال کا طریقہ لکھیں)</p>
+            <p><strong>نوٹ:</strong> (کوئی خاص ہدایت یا احتیاط)</p>
+            <hr style="margin:15px 0;">
+            <p style="color:#555; font-style:italic;">اس خانے میں Lift Mustafai Daaru کے بارے میں مزید تفصیلات لکھی جا سکتی ہیں۔</p>
+        </div>
+
+        <p style="margin-top:20px; color:#006b54;"><strong>نوٹ:</strong> ان تینوں دارو کی تفصیلات آپ اپنی مرضی کے مطابق تبدیل کر سکتے ہیں۔ ہر دارو کا اپنا الگ خانہ ہے جس میں آپ ترکیب، استعمال، اور دیگر معلومات درج کر سکتے ہیں۔</p>
+    </div>
+
+    <!-- ========== IMPORTANT VIDEOS (1-139) ========== -->
+    <div id="videos" class="post">
+        <h2>🎥 Important Videos - Complete List (1-139)</h2>
+        <p style="font-size:1.1rem; color:#006b54;">ذیل میں تمام اہم ویڈیوز کے لنک درج ہیں۔</p>
+        <hr>
+        <div class="video-item"><span class="video-number">1.</span> <a href="https://youtu.be/GHyj_a_A-3s" target="_blank">https://youtu.be/GHyj_a_A-3s</a></div>
+        <div class="video-description">ڈیجیٹل تصویر کے حوالے سے ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">2.</span> <a href="https://youtu.be/Gc8GWa6sJuQ" target="_blank">https://youtu.be/Gc8GWa6sJuQ</a></div>
+        <div class="video-description">رفع الیدین کے حوالے سے ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">3.</span> <a href="https://youtu.be/sbvCSYbO8-g" target="_blank">https://youtu.be/sbvCSYbO8-g</a></div>
+        <div class="video-description">مفتی منیب الرحمان کے حوالے سے ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">4.</span> <a href="https://youtu.be/puoMNcuaZo0" target="_blank">https://youtu.be/puoMNcuaZo0</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">5.</span> <a href="https://youtu.be/olAvjvPPQAg" target="_blank">https://youtu.be/olAvjvPPQAg</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">6.</span> <a href="https://youtu.be/6I4MpM8vVVo" target="_blank">https://youtu.be/6I4MpM8vVVo</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">7.</span> <a href="https://youtu.be/RqYcIhxDbaY" target="_blank">https://youtu.be/RqYcIhxDbaY</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">8.</span> <a href="https://youtu.be/yMYKi8NLZtY" target="_blank">https://youtu.be/yMYKi8NLZtY</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">9.</span> <a href="https://youtu.be/iv4ebLQB-bI" target="_blank">https://youtu.be/iv4ebLQB-bI</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">10.</span> <a href="https://youtu.be/6Qbsek6d-Cc" target="_blank">https://youtu.be/6Qbsek6d-Cc</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">11.</span> <a href="https://youtu.be/Nugncx78ZK0" target="_blank">https://youtu.be/Nugncx78ZK0</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">12.</span> <a href="https://youtu.be/kGByNmOkLUs" target="_blank">https://youtu.be/kGByNmOkLUs</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">13.</span> <a href="https://youtu.be/zuwlXSwt4Ek" target="_blank">https://youtu.be/zuwlXSwt4Ek</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">14.</span> <a href="https://youtu.be/VKWnjuz7ewY" target="_blank">https://youtu.be/VKWnjuz7ewY</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">15.</span> <a href="https://youtu.be/exhX2nTV68g" target="_blank">https://youtu.be/exhX2nTV68g</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">16.</span> <a href="https://youtu.be/MIQYauf3I08" target="_blank">https://youtu.be/MIQYauf3I08</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">17.</span> <a href="https://youtu.be/2RH_0sS-S2g" target="_blank">https://youtu.be/2RH_0sS-S2g</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">18.</span> <a href="https://youtu.be/MP3O6WphjRs" target="_blank">https://youtu.be/MP3O6WphjRs</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">19.</span> <a href="https://youtu.be/Bsqe5K19Hn0" target="_blank">https://youtu.be/Bsqe5K19Hn0</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">20.</span> <a href="https://youtu.be/ubbnkBHWs4c" target="_blank">https://youtu.be/ubbnkBHWs4c</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">21.</span> <a href="https://youtu.be/isXO1tSGA7U" target="_blank">https://youtu.be/isXO1tSGA7U</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">22.</span> <a href="https://youtu.be/9VvJtL2a6wI" target="_blank">https://youtu.be/9VvJtL2a6wI</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">23.</span> <a href="https://youtu.be/bNAowICEN8o" target="_blank">https://youtu.be/bNAowICEN8o</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">24.</span> <a href="https://youtu.be/hQJm0BxTeVw" target="_blank">https://youtu.be/hQJm0BxTeVw</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">25.</span> <a href="https://youtu.be/Mtx5SgCQF38" target="_blank">https://youtu.be/Mtx5SgCQF38</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">26.</span> <a href="https://youtu.be/nVoK9t9bI3U" target="_blank">https://youtu.be/nVoK9t9bI3U</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">27.</span> <a href="https://youtu.be/kUXTf8a6jY8" target="_blank">https://youtu.be/kUXTf8a6jY8</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">28.</span> <a href="https://youtu.be/fOEkAVnO_GY" target="_blank">https://youtu.be/fOEkAVnO_GY</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">29.</span> <a href="https://youtu.be/Bs9tTG42QLA" target="_blank">https://youtu.be/Bs9tTG42QLA</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">30.</span> <a href="https://youtu.be/uYTgEzEtAB0" target="_blank">https://youtu.be/uYTgEzEtAB0</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">31.</span> <a href="https://youtu.be/L0zcARv2ae8" target="_blank">https://youtu.be/L0zcARv2ae8</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">32.</span> <a href="https://youtu.be/84IZriU9zSU" target="_blank">https://youtu.be/84IZriU9zSU</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">33.</span> <a href="https://youtu.be/CJgvTXcxvn8" target="_blank">https://youtu.be/CJgvTXcxvn8</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">34.</span> <a href="https://youtu.be/hfQJMoZgCGk" target="_blank">https://youtu.be/hfQJMoZgCGk</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">35.</span> <a href="https://youtu.be/pvR9DRUpku4" target="_blank">https://youtu.be/pvR9DRUpku4</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">36.</span> <a href="https://youtu.be/YmTmfXgQymA" target="_blank">https://youtu.be/YmTmfXgQymA</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">37.</span> <a href="https://youtu.be/8QWeUtTjhqw" target="_blank">https://youtu.be/8QWeUtTjhqw</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">38.</span> <a href="https://youtu.be/BGotJ2fxCi0" target="_blank">https://youtu.be/BGotJ2fxCi0</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">39.</span> <a href="https://youtu.be/3MsH4rLDVTc" target="_blank">https://youtu.be/3MsH4rLDVTc</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">40.</span> <a href="https://youtu.be/vSsVUUPlOgg" target="_blank">https://youtu.be/vSsVUUPlOgg</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">41.</span> <a href="https://youtu.be/G9oqbpkgOa0" target="_blank">https://youtu.be/G9oqbpkgOa0</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">42.</span> <a href="https://youtu.be/UWBP2b4g6HA" target="_blank">https://youtu.be/UWBP2b4g6HA</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">43.</span> <a href="https://youtu.be/XFIvP3tdsj0" target="_blank">https://youtu.be/XFIvP3tdsj0</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">44.</span> <a href="https://youtu.be/SFxUOfcqmjA" target="_blank">https://youtu.be/SFxUOfcqmjA</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">45.</span> <a href="https://youtube.com/shorts/4MJ1j1MIkd8" target="_blank">https://youtube.com/shorts/4MJ1j1MIkd8</a></div>
+        <div class="video-description">کیک پر تصویر کا مسئلہ</div>
+
+        <div class="video-item"><span class="video-number">46.</span> <a href="https://youtube.com/shorts/rycTrJEFYc0" target="_blank">https://youtube.com/shorts/rycTrJEFYc0</a></div>
+        <div class="video-description">منگیتر سے بات کا مسئلہ</div>
+
+        <div class="video-item"><span class="video-number">47.</span> <a href="https://youtu.be/ovpVLuNAGrs" target="_blank">https://youtu.be/ovpVLuNAGrs</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">48.</span> <a href="https://youtu.be/p4D6sZ_MlWQ" target="_blank">https://youtu.be/p4D6sZ_MlWQ</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">49.</span> <a href="https://youtu.be/rV6ud8zeiFU" target="_blank">https://youtu.be/rV6ud8zeiFU</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">50.</span> <a href="https://youtu.be/52Y3E97vrCY" target="_blank">https://youtu.be/52Y3E97vrCY</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">51.</span> <a href="https://youtu.be/p_ESrgUTxlA" target="_blank">https://youtu.be/p_ESrgUTxlA</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">52.</span> <a href="https://youtu.be/q9019g3s-ks" target="_blank">https://youtu.be/q9019g3s-ks</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">53.</span> <a href="https://youtu.be/Vl82ls-1pZ8" target="_blank">https://youtu.be/Vl82ls-1pZ8</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">54.</span> <a href="https://youtu.be/4Q4bTNfyO8M" target="_blank">https://youtu.be/4Q4bTNfyO8M</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">55.</span> <a href="https://youtu.be/oRGa1JPsAJo" target="_blank">https://youtu.be/oRGa1JPsAJo</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">56.</span> <a href="https://m.youtube.com/watch?v=kGfUgibsjDQ" target="_blank">https://m.youtube.com/watch?v=kGfUgibsjDQ</a></div>
+        <div class="video-description">امیر معاویہ رضی اللہ عنہ</div>
+
+        <div class="video-item"><span class="video-number">57.</span> <a href="https://youtu.be/PGL2vpkfXfs" target="_blank">https://youtu.be/PGL2vpkfXfs</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">58.</span> <a href="https://youtu.be/0BvfddD42MU" target="_blank">https://youtu.be/0BvfddD42MU</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">59.</span> <a href="https://youtu.be/2H2-XwpEJJ8" target="_blank">https://youtu.be/2H2-XwpEJJ8</a></div>
+        <div class="video-description">ویڈیو از: Islamic Digital Studio</div>
+
+        <div class="video-item"><span class="video-number">60.</span> <a href="https://www.youtube.com/live/iu-tCJi5_eQ" target="_blank">https://www.youtube.com/live/iu-tCJi5_eQ</a></div>
+        <div class="video-description">زکوٰۃ سیمینار</div>
+
+        <div class="video-item"><span class="video-number">61.</span> <a href="https://youtu.be/GfluIz35jAA" target="_blank">https://youtu.be/GfluIz35jAA</a></div>
+        <div class="video-description">فتاویٰ اہلسنت کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">62.</span> <a href="https://youtu.be/NvOornY7AtM" target="_blank">https://youtu.be/NvOornY7AtM</a></div>
+        <div class="video-description">مفتی صاحب کا فتویٰ</div>
+        
+        <div class="video-item"><span class="video-number">63.</span> <a href="https://youtu.be/xVWwjlRnhTI" target="_blank">https://youtu.be/xVWwjlRnhTI</a></div>
+        <div class="video-description">شرعی مسائل کا حل</div>
+        
+        <div class="video-item"><span class="video-number">64.</span> <a href="https://youtu.be/crJxxtWePHw" target="_blank">https://youtu.be/crJxxtWePHw</a></div>
+        <div class="video-description">فقہی استفسار</div>
+        
+        <div class="video-item"><span class="video-number">65.</span> <a href="https://youtu.be/NGg8WaCwyls" target="_blank">https://youtu.be/NGg8WaCwyls</a></div>
+        <div class="video-description">نماز کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">66.</span> <a href="https://youtu.be/CK7TKDRN8Zw" target="_blank">https://youtu.be/CK7TKDRN8Zw</a></div>
+        <div class="video-description">روزہ کے احکام</div>
+        
+        <div class="video-item"><span class="video-number">67.</span> <a href="https://youtu.be/D0YB4k_eSBI" target="_blank">https://youtu.be/D0YB4k_eSBI</a></div>
+        <div class="video-description">زکوٰۃ کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">68.</span> <a href="https://youtu.be/DTjPssoVLik" target="_blank">https://youtu.be/DTjPssoVLik</a></div>
+        <div class="video-description">حج کے احکام</div>
+        
+        <div class="video-item"><span class="video-number">69.</span> <a href="https://youtu.be/IN_lx4g-7gE" target="_blank">https://youtu.be/IN_lx4g-7gE</a></div>
+        <div class="video-description">نکاح کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">70.</span> <a href="https://youtu.be/iKu93FCkOAU" target="_blank">https://youtu.be/iKu93FCkOAU</a></div>
+        <div class="video-description">طلاق کے احکام</div>
+        
+        <div class="video-item"><span class="video-number">71.</span> <a href="https://youtu.be/8prcLMnJWrw" target="_blank">https://youtu.be/8prcLMnJWrw</a></div>
+        <div class="video-description">وراثت کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">72.</span> <a href="https://youtu.be/66yvgI5mUGs" target="_blank">https://youtu.be/66yvgI5mUGs</a></div>
+        <div class="video-description">خرید و فروخت کے احکام</div>
+        
+        <div class="video-item"><span class="video-number">73.</span> <a href="https://youtu.be/lO8vKI9rkXQ" target="_blank">https://youtu.be/lO8vKI9rkXQ</a></div>
+        <div class="video-description">سود کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">74.</span> <a href="https://youtu.be/05sPaiTVULQ" target="_blank">https://youtu.be/05sPaiTVULQ</a></div>
+        <div class="video-description">شرعی کاروبار</div>
+        
+        <div class="video-item"><span class="video-number">75.</span> <a href="https://youtu.be/qVivPGibw3o" target="_blank">https://youtu.be/qVivPGibw3o</a></div>
+        <div class="video-description">قرض کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">76.</span> <a href="https://youtu.be/x3FfCMkNlJk" target="_blank">https://youtu.be/x3FfCMkNlJk</a></div>
+        <div class="video-description">وقف کے احکام</div>
+        
+        <div class="video-item"><span class="video-number">77.</span> <a href="https://youtu.be/wUnjHOi80R8" target="_blank">https://youtu.be/wUnjHOi80R8</a></div>
+        <div class="video-description">حلال و حرام کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">78.</span> <a href="https://youtu.be/lD8Koo7t8uU" target="_blank">https://youtu.be/lD8Koo7t8uU</a></div>
+        <div class="video-description">مکروہات کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">79.</span> <a href="https://youtube.com/shorts/TsZmpCSuPLE" target="_blank">https://youtube.com/shorts/TsZmpCSuPLE</a></div>
+        <div class="video-description">حق پر کون ہے؟</div>
+        
+        <div class="video-item"><span class="video-number">80.</span> <a href="https://youtube.com/shorts/IRww2IsMq0U" target="_blank">https://youtube.com/shorts/IRww2IsMq0U</a></div>
+        <div class="video-description">جنتی فرقہ</div>
+        
+        <div class="video-item"><span class="video-number">81.</span> <a href="https://youtu.be/TXEugUYJFL4" target="_blank">https://youtu.be/TXEugUYJFL4</a></div>
+        <div class="video-description">غسل کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">82.</span> <a href="https://youtu.be/_BdE-fo_Wuc" target="_blank">https://youtu.be/_BdE-fo_Wuc</a></div>
+        <div class="video-description">وضو کے احکام</div>
+        
+        <div class="video-item"><span class="video-number">83.</span> <a href="https://youtu.be/4aw2IeTQKIw" target="_blank">https://youtu.be/4aw2IeTQKIw</a></div>
+        <div class="video-description">تیمم کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">84.</span> <a href="https://youtube.com/shorts/G5yP8-1bYl4" target="_blank">https://youtube.com/shorts/G5yP8-1bYl4</a></div>
+        <div class="video-description">ذاکر نائیک رد</div>
+        
+        <div class="video-item"><span class="video-number">85.</span> <a href="https://youtu.be/OqY1afcjG9E" target="_blank">https://youtu.be/OqY1afcjG9E</a></div>
+        <div class="video-description">اذان و اقامت کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">86.</span> <a href="https://youtu.be/UfErgoz4-pg" target="_blank">https://youtu.be/UfErgoz4-pg</a></div>
+        <div class="video-description">جماعت کی فضیلت</div>
+        
+        <div class="video-item"><span class="video-number">87.</span> <a href="https://youtu.be/tWE9jwYf8nM" target="_blank">https://youtu.be/tWE9jwYf8nM</a></div>
+        <div class="video-description">امامت کے احکام</div>
+        
+        <div class="video-item"><span class="video-number">88.</span> <a href="https://youtu.be/8oyRMbvCRmo" target="_blank">https://youtu.be/8oyRMbvCRmo</a></div>
+        <div class="video-description">مسجد کے احکام</div>
+        
+        <div class="video-item"><span class="video-number">89.</span> <a href="https://youtube.com/shorts/eMLzjIlDBOU" target="_blank">https://youtube.com/shorts/eMLzjIlDBOU</a></div>
+        <div class="video-description">یزید کی حقیقت</div>
+        
+        <div class="video-item"><span class="video-number">90.</span> <a href="https://youtube.com/shorts/wtVngd9jytk" target="_blank">https://youtube.com/shorts/wtVngd9jytk</a></div>
+        <div class="video-description">صحابہ کرام کی فضیلت</div>
+        
+        <div class="video-item"><span class="video-number">91.</span> <a href="https://youtu.be/eprSipesvc0" target="_blank">https://youtu.be/eprSipesvc0</a></div>
+        <div class="video-description">ڈاکٹر اسرار کا رد</div>
+        
+        <div class="video-item"><span class="video-number">92.</span> <a href="https://youtu.be/r2rhc-TS4N4" target="_blank">https://youtu.be/r2rhc-TS4N4</a></div>
+        <div class="video-description">ڈاکٹر اسرار کا رد (دوم)</div>
+        
+        <div class="video-item"><span class="video-number">93.</span> <a href="https://youtube.com/shorts/zoiDK_LFlso" target="_blank">https://youtube.com/shorts/zoiDK_LFlso</a></div>
+        <div class="video-description">عمران خان/ٹی ایل پی</div>
+        
+        <div class="video-item"><span class="video-number">94.</span> <a href="https://youtu.be/WtJw9zMUjLw" target="_blank">https://youtu.be/WtJw9zMUjLw</a></div>
+        <div class="video-description">ڈاکٹر اسرار کا رد (سوم)</div>
+        
+        <div class="video-item"><span class="video-number">95.</span> <a href="https://youtube.com/shorts/3C1l64LVG8M" target="_blank">https://youtube.com/shorts/3C1l64LVG8M</a></div>
+        <div class="video-description">شرعی حکم کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">96.</span> <a href="https://youtu.be/AOz37_sLx04" target="_blank">https://youtu.be/AOz37_sLx04</a></div>
+        <div class="video-description">حجاب کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">97.</span> <a href="https://youtu.be/63GL3q65BRI" target="_blank">https://youtu.be/63GL3q65BRI</a></div>
+        <div class="video-description">مردوں کے لیے شرعی احکام</div>
+        
+        <div class="video-item"><span class="video-number">98.</span> <a href="https://youtu.be/j9Y7U0dqab4" target="_blank">https://youtu.be/j9Y7U0dqab4</a></div>
+        <div class="video-description">عورتوں کے لیے شرعی احکام</div>
+        
+        <div class="video-item"><span class="video-number">99.</span> <a href="https://youtu.be/L3KASSU5Ji4" target="_blank">https://youtu.be/L3KASSU5Ji4</a></div>
+        <div class="video-description">بچوں کی تربیت</div>
+        
+        <div class="video-item"><span class="video-number">100.</span> <a href="https://youtube.com/shorts/c5mZv-HSDs0" target="_blank">https://youtube.com/shorts/c5mZv-HSDs0</a></div>
+        <div class="video-description">گھریلو مسائل کا حل</div>
+        
+        <div class="video-item"><span class="video-number">101.</span> <a href="https://youtu.be/CcqqU2O6Qio" target="_blank">https://youtu.be/CcqqU2O6Qio</a></div>
+        <div class="video-description">معاشی مسائل کا حل</div>
+        
+        <div class="video-item"><span class="video-number">102.</span> <a href="https://youtu.be/erwoJKEx3-I" target="_blank">https://youtu.be/erwoJKEx3-I</a></div>
+        <div class="video-description">سماجی مسائل کا حل</div>
+        
+        <div class="video-item"><span class="video-number">103.</span> <a href="https://youtu.be/Bq59XdiRAGg" target="_blank">https://youtu.be/Bq59XdiRAGg</a></div>
+        <div class="video-description">سیاسی مسائل کا حل</div>
+        
+        <div class="video-item"><span class="video-number">104.</span> <a href="https://youtu.be/9siuCEIB-Co" target="_blank">https://youtu.be/9siuCEIB-Co</a></div>
+        <div class="video-description">امت مسلمہ کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">105.</span> <a href="https://youtu.be/b-iTkabrIEs" target="_blank">https://youtu.be/b-iTkabrIEs</a></div>
+        <div class="video-description">دینی مدارس کی اہمیت</div>
+        
+        <div class="video-item"><span class="video-number">106.</span> <a href="https://youtu.be/01Jz2oSrxI4" target="_blank">https://youtu.be/01Jz2oSrxI4</a></div>
+        <div class="video-description">علوم اسلامیہ کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">107.</span> <a href="https://youtu.be/uerJYweSv3w" target="_blank">https://youtu.be/uerJYweSv3w</a></div>
+        <div class="video-description">قرآن و حدیث کا درس</div>
+        
+        <div class="video-item"><span class="video-number">108.</span> <a href="https://m.youtube.com/watch?v=nl31BZE2MZQ" target="_blank">https://m.youtube.com/watch?v=nl31BZE2MZQ</a></div>
+        <div class="video-description">غیر اللہ سے مانگنا</div>
+        
+        <div class="video-item"><span class="video-number">109.</span> <a href="https://m.youtube.com/watch?v=4bl565frmXQ" target="_blank">https://m.youtube.com/watch?v=4bl565frmXQ</a></div>
+        <div class="video-description">غیر اللہ سے مانگنا (دوم)</div>
+        
+        <div class="video-item"><span class="video-number">110.</span> <a href="https://youtu.be/2z1qp4ZtWkc" target="_blank">https://youtu.be/2z1qp4ZtWkc</a></div>
+        <div class="video-description">شرک و بدعت کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">111.</span> <a href="https://youtu.be/qKyQTrjsYT4" target="_blank">https://youtu.be/qKyQTrjsYT4</a></div>
+        <div class="video-description">پینٹ شرٹ کا مسئلہ</div>
+        
+        <div class="video-item"><span class="video-number">112.</span> <a href="https://youtu.be/0vb7FQS9gvg" target="_blank">https://youtu.be/0vb7FQS9gvg</a></div>
+        <div class="video-description">داڑھی کے مسائل</div>
+        
+        <div class="video-item"><span class="video-number">113.</span> <a href="https://youtu.be/o6mdF-GymXQ" target="_blank">https://youtu.be/o6mdF-GymXQ</a></div>
+        <div class="video-description">سُنّتِ نبوی کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">114.</span> <a href="https://youtu.be/0NlWMI--bWs" target="_blank">https://youtu.be/0NlWMI--bWs</a></div>
+        <div class="video-description">مستحب اعمال کا بیان</div>
+        
+        <div class="video-item"><span class="video-number">115.</span> <a href="https://youtu.be/o6mdF-GymXQ" target="_blank">https://youtu.be/o6mdF-GymXQ</a></div>
+        <div class="video-description">سُنّتِ نبوی کا بیان (دوبارہ)</div>
+
+        <div class="video-item"><span class="video-number">116.</span> <a href="https://youtu.be/HcbUP5uzfXc" target="_blank">https://youtu.be/HcbUP5uzfXc</a></div>
+        <div class="video-description">ٹک ٹاک کے لیے ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">117.</span> <a href="https://youtu.be/t-KAFpep9rI" target="_blank">https://youtu.be/t-KAFpep9rI</a></div>
+        <div class="video-description">ٹک ٹاک کے لیے ویڈیو (دوم)</div>
+
+        <div class="video-item"><span class="video-number">118.</span> <a href="https://youtu.be/nhzObcReTaU" target="_blank">https://youtu.be/nhzObcReTaU</a></div>
+        <div class="video-description">ٹک ٹاک کے لیے ویڈیو (سوم)</div>
+
+        <div class="video-item"><span class="video-number">119.</span> <a href="https://youtu.be/IxOesxyLrcA" target="_blank">https://youtu.be/IxOesxyLrcA</a></div>
+        <div class="video-description">ٹک ٹاک کے لیے ویڈیو (چہارم)</div>
+
+        <div class="video-item"><span class="video-number">120.</span> <a href="https://youtu.be/chaOPahyfNw" target="_blank">https://youtu.be/chaOPahyfNw</a></div>
+        <div class="video-description">ٹک ٹاک کے لیے ویڈیو (پنجم)</div>
+
+        <div class="video-item"><span class="video-number">121.</span> <a href="https://youtu.be/x073pO4qQwY" target="_blank">https://youtu.be/x073pO4qQwY</a></div>
+        <div class="video-description">ڈسکارڈ کے لیے ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">122.</span> <a href="https://youtu.be/djLRY63PtH4?si=A8TU5xuXe7ZBnunf" target="_blank">https://youtu.be/djLRY63PtH4?si=A8TU5xuXe7ZBnunf</a></div>
+        <div class="video-description">اسکرین شاٹ ٹیکسٹ ایڈٹ کرنے کا طریقہ</div>
+
+        <div class="video-item"><span class="video-number">123.</span> <a href="https://youtu.be/7GtJQWoiaXA?si=M89-E4ujx5-dFpmr" target="_blank">https://youtu.be/7GtJQWoiaXA?si=M89-E4ujx5-dFpmr</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">124.</span> <a href="https://youtu.be/YdFpRXlcy1o?si=pTCKgdtpDFPl3U2A" target="_blank">https://youtu.be/YdFpRXlcy1o?si=pTCKgdtpDFPl3U2A</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">125.</span> <a href="https://youtu.be/T1y0sZebpXw?si=5ptYkLO1QImkyA8R" target="_blank">https://youtu.be/T1y0sZebpXw?si=5ptYkLO1QImkyA8R</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">126.</span> <a href="https://youtu.be/g_ndr8TJ7n0?si=QSV_jqlS379Zm0zp" target="_blank">https://youtu.be/g_ndr8TJ7n0?si=QSV_jqlS379Zm0zp</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">127.</span> <a href="https://youtu.be/qdTJeuOSth4?si=cmF9Mwf_ztgkN64S" target="_blank">https://youtu.be/qdTJeuOSth4?si=cmF9Mwf_ztgkN64S</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">128.</span> <a href="https://youtu.be/ygidqQeaCqI?si=6bHwldOvjbHRzpIV" target="_blank">https://youtu.be/ygidqQeaCqI?si=6bHwldOvjbHRzpIV</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">129.</span> <a href="https://youtu.be/gFBn8P-lUfw?si=9z-c2Mi3z-mTnJEk" target="_blank">https://youtu.be/gFBn8P-lUfw?si=9z-c2Mi3z-mTnJEk</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">130.</span> <a href="https://youtu.be/rcFPvQdCs7Q?si=vdqaUOztf4Y3XFO-" target="_blank">https://youtu.be/rcFPvQdCs7Q?si=vdqaUOztf4Y3XFO-</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">131.</span> <a href="https://youtu.be/TswtrA-gGpQ?si=iNZEZ3MhdhDVOTWB" target="_blank">https://youtu.be/TswtrA-gGpQ?si=iNZEZ3MhdhDVOTWB</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">132.</span> <a href="https://youtu.be/hBo0wH63-Dk?si=6fBYGgoOYH6tjTjw" target="_blank">https://youtu.be/hBo0wH63-Dk?si=6fBYGgoOYH6tjTjw</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">133.</span> <a href="https://youtu.be/dvUbVf187TE?si=fWjSNnjR-Ue-Tzs_" target="_blank">https://youtu.be/dvUbVf187TE?si=fWjSNnjR-Ue-Tzs_</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">134.</span> <a href="https://youtu.be/YdFpRXlcy1o?si=ct46-uPTe0kE5UQh" target="_blank">https://youtu.be/YdFpRXlcy1o?si=ct46-uPTe0kE5UQh</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">135.</span> <a href="https://youtu.be/YuSyMouquaI?si=GV1LgmyyG9JEzkJK" target="_blank">https://youtu.be/YuSyMouquaI?si=GV1LgmyyG9JEzkJK</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">136.</span> <a href="https://youtu.be/-Qm0BrL1dDc?si=Zi8lsyqmO5sZy6j1" target="_blank">https://youtu.be/-Qm0BrL1dDc?si=Zi8lsyqmO5sZy6j1</a></div>
+        <div class="video-description">حافظ طاہر قادری کی پیشکش</div>
+
+        <div class="video-item"><span class="video-number">137.</span> <a href="https://youtu.be/0bnpegd1jVE?si=V4cU_pwQbVoFaMpv" target="_blank">https://youtu.be/0bnpegd1jVE?si=V4cU_pwQbVoFaMpv</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">138.</span> <a href="https://youtu.be/1CCVcjoCEuc?si=8hIod4vJFnvmgmxT" target="_blank">https://youtu.be/1CCVcjoCEuc?si=8hIod4vJFnvmgmxT</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <div class="video-item"><span class="video-number">139.</span> <a href="https://youtu.be/IsrcC_MeQZs?si=6pYtOmPoVnT_G5_B" target="_blank">https://youtu.be/IsrcC_MeQZs?si=6pYtOmPoVnT_G5_B</a></div>
+        <div class="video-description">نئی ویڈیو</div>
+
+        <hr>
+        <p style="color:#006b54; font-weight:bold; font-size:1.1rem;">✅ کل 139 ویڈیوز شامل ہیں۔</p>
+    </div>
+
+    <!-- ========== DARULIFTAH VIDEOS ========== -->
+    <div id="darulifta-videos" class="post">
+        <h2>⚖️ Daruliftah Ahlesunnat Videos</h2>
+        <p style="color:#555;">یہ ویڈیوز Important Videos سیکشن میں نمبر 61 سے 115 تک موجود ہیں۔</p>
+        <p style="color:#006b54; font-weight:bold;">✅ کل 55 ویڈیوز شامل ہیں۔</p>
+    </div>
+
+    <!-- ========== OTHER VIDEOS ========== -->
+    <div id="other-videos" class="post">
+        <h2>📱 Other Platform Videos</h2>
+        <p style="color:#555;">یہ ویڈیوز Important Videos سیکشن میں نمبر 116 سے 122 تک موجود ہیں۔</p>
+        <p style="color:#006b54; font-weight:bold;">✅ کل 7 ویڈیوز شامل ہیں۔</p>
+    </div>
+
+    <!-- ========== VERCEL PROJECTS ========== -->
+    <div id="vercel" class="post">
+        <h2>🚀 My Vercel Projects</h2>
+        <hr>
+        <div class="vercel-project-box"><span class="project-icon">📱</span><strong>Mustafai Chatting App:</strong> <a href="https://mustafai-chatting-app.vercel.app/">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">📲</span><strong>Nexus Play Store:</strong> <a href="https://nexus-play-store.vercel.app/">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">👨‍💻</span><strong>Nexus Developer:</strong> <a href="https://developer-nexus-play-store.vercel.app/">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">📦</span><strong>Free Play Store Publisher:</strong> <a href="https://free-play-store-app-publisher.vercel.app/">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">🕌</span><strong>Daruliftah Mustafaiya (1):</strong> <a href="https://daruliftah-mustafaiya.vercel.app">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">🕌</span><strong>Daruliftah Mustafaiya (2):</strong> <a href="https://daruliftah-mustafaiyaa.vercel.app">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">🕌</span><strong>Daruliftah Mustafaiya (3):</strong> <a href="https://daruliftah-mustafaiyaaa.vercel.app">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">⏰</span><strong>Namaz Time:</strong> <a href="https://namaztime-ruby.vercel.app/">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">📅</span><strong>Faizan Tawareekh:</strong> <a href="https://faizan-tawareekh.vercel.app/">Link</a></div>
+        <div class="vercel-project-box"><span class="project-icon">🤖</span><strong>Z-AI:</strong> <a href="https://z-ai-omega.vercel.app/">Link</a></div>
+    </div>
+
+    <!-- ========== DAILYMOTION ========== -->
+    <div id="dailymotion" class="post">
+        <h2>🎬 DailyMotion Website - My Account Link</h2>
+        <div class="info-box"><a href="https://www.dailymotion.com/user/m_fareed_mustafai">https://www.dailymotion.com/user/m_fareed_mustafai</a></div>
+    </div>
+
+    <!-- ========== JAWAHIR ========== -->
+    <div id="jawahir" class="post">
+        <h2>💎 Jawahir e Mustafavia</h2>
+        <div class="jawahir-box"><h4>📄 SmallPDF لنک 1</h4><a href="https://smallpdf.com/file#s=6549a411-4787-46be-8e55-876878079679&r=read">Link</a></div>
+        <div class="jawahir-box"><h4>📄 SmallPDF لنک 2</h4><a href="https://smallpdf.com/file#s=25c13ebb-0866-496e-b2b9-fa4260274811&r=read">Link</a></div>
+        <div class="jawahir-box"><h4>📖 Jild Awwal</h4><a href="https://archive.org/details/3_20260502_20260502_1719">Link</a></div>
+        <div class="jawahir-box"><h4>📖 Jild Dom</h4><a href="https://archive.org/details/20260505_20260505_2002">Link</a></div>
+    </div>
+
+    <!-- ========== ALL INFO ========== -->
+    <div id="allinfo" class="post">
+        <h2>📋 All Information - My Personal Website</h2>
+        <div class="info-box"><strong>🌐 My Personal Website:</strong> <a href="https://fareedmustafai0.wordpress.com">fareedmustafai0.wordpress.com</a></div>
+        <div class="info-box"><strong>📂 Drive File:</strong> <a href="https://drive.google.com/file/d/1SNlllG9ed7jDg1P7PKlCP9Z2V2b8kXAo/view?usp=drivesdk">Google Drive Link</a></div>
+    </div>
+
+    <!-- ========== DAILY ISLAMIC DATE ========== -->
+    <div id="islamicdate" class="post">
+        <h2>📅 Daily Islamic Date</h2>
+        <div class="islamic-date-box">
+            <div class="date-line">اسلامی: <span class="highlight">*08* صفر المظفر ، *1448ھ*</span></div>
+            <div class="date-line">عیسَوی: <span class="highlight">*23* جولائی ، *2026ء*</span></div>
+            <div class="date-line">دن: <span class="highlight">*جمعرات*</span></div>
+            <div class="date-line">😊</div>
+            <div class="date-line"><span class="highlight">*23rd* *July*, *2026.*</span></div>
+            <div class="date-line"><span class="highlight">*Thursday*</span></div>
+            <hr>
+            <div class="date-line">*کیا آج آپ نے درود شریف پڑھا؟*</div>
+            <div class="date-line" style="color:#006b54;">*صلی اللّٰه تعالیٰ علی محمّد صلی اللّٰہ علیہ وآلہ وسلم❤️*</div>
+            <div class="date-line" style="color:#d9534f;">*دنیا بھر کے مظلوم مسلمانوں کو اپنی دعاؤں میں ضرور یاد رکھیے!*</div>
+        </div>
+        <p style="font-size:1.05rem; color:#006b54; text-align:center;">پاکستان کے لحاظ سے اسلامی تاریخ حاصل کرنے کے لیے <strong>دعوت اسلامی</strong> کے واٹس ایپ چینل یا اس لنک پر کلک کریں:</p>
+        <div style="text-align:center;"><a href="https://www.facebook.com/dawateislami.net">https://www.facebook.com/dawateislami.net</a></div>
+        <p style="font-size:1.05rem; color:#006b54; text-align:center;">سعودی عربیہ کے لحاظ سے اسلامی تاریخ حاصل کرنے کے لیے یہ لنک ہے:</p>
+        <div style="text-align:center;"><a href="https://aladhan.com/">https://aladhan.com/</a></div>
+    </div>
+
+    <!-- ========== BOOKS ========== -->
+    <div id="books" class="post">
+        <h2>📚 The Best Book on the Beliefs of the Sunnis</h2>
+        <div class="book-box"><h4>📖 Google Drive Link</h4><a href="https://drive.google.com/file/d/1jDJjGa-crNTIYeWqrzAD1Qp8fE5ws9E0/view?usp=drivesdk">Link</a></div>
+        <div class="book-box"><h4>📖 Internet Archive Link 1</h4><a href="https://archive.org/details/al-aqaid-wal-masayil-arabi-by-mufti-abdul-qayyum-hazarvi-qadri-r.a.">Link</a></div>
+        <div class="book-box"><h4>📖 Internet Archive Link 2</h4><a href="https://archive.org/details/AlAqaidWalMasail_Arabic_Urdu">Link</a></div>
+        <div class="book-box" style="border-color:#006b54; background:#eef9f6;"><h4>📖 Ja Al Haq Wa Zahaqal Batil</h4><a href="https://www.dawateislami.net/bookslibrary/ur/ja-al-haq">Link</a></div>
+    </div>
+
+    <!-- ========== AHLESUNNAT BOARD ========== -->
+    <div id="ahlesunnatboard" class="post">
+        <h2>📋 Ahlesunnat Board Pakistan</h2>
+        <div class="board-box"><h4>🌐 ویب سائٹ کا لنک</h4><a href="https://ahlesunnatboardspak.com">https://ahlesunnatboardspak.com</a></div>
+        <div class="board-box"><h4>📌 تعارف</h4><p><strong>اہل سنت بورڈز پاکستان</strong> ایک ایسا پلیٹ فارم ہے...</p></div>
+    </div>
+
+    <!-- ========== UNLIMITED GMAIL ========== -->
+    <div id="gmail" class="post">
+        <h2>📧 Unlimited Gmail Generator</h2>
+        <div class="gmail-box"><h4>🔗 لنک 1</h4><a href="https://easeado.com/gmail-generator/">https://easeado.com/gmail-generator/</a></div>
+        <div class="gmail-box"><h4>🔗 لنک 2</h4><a href="https://mailmeteor.com/tools/gmail-generator">https://mailmeteor.com/tools/gmail-generator</a></div>
+    </div>
+
+    <!-- ========== ISLAMIC DIGITAL STUDIO WEBSITE ========== -->
+    <div id="idswebsite" class="post">
+        <h2>🌐 Islamic Digital Studio Website</h2>
+        <div class="ids-box"><h4>🔗 Islamic Digital Studio</h4><a href="https://www.islamicdigitalstudio.com/">https://www.islamicdigitalstudio.com/</a></div>
+    </div>
+
+    <!-- ========== POSTS (FROM FIREBASE) ========== -->
+    <div id="posts" class="post">
+        <h2>📝 Latest Posts</h2>
+        <p style="font-size:1.1rem; color:#006b54;">ذیل میں تازہ ترین پوسٹس درج ہیں۔</p>
+        <hr>
+        <div id="postsContainer">
+            <p style="color:#999;">پوسٹس لوڈ ہو رہی ہیں...</p>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2026 M.FAREED MUSTAFAI | تمام مواد آپ کی فائل کے مطابق ہے</p>
+    <p style="font-size:0.9rem; color:#555; margin-top:5px;">🚀 Website Complete - Ready for WhatsApp Hosting</p>
+</footer>
+
+<!-- ========== AI SEARCH START (ELEGANT) ========== -->
+<button class="ai-float-btn" id="aiFloatBtn" title="AI Search">✨</button>
+
+<div class="ai-modal-overlay" id="aiModalOverlay">
+    <div class="ai-chat-box">
+        <div class="ai-chat-header">
+            <h3>✨ AI Search Assistant</h3>
+            <button class="ai-close-btn" id="aiCloseBtn">✖</button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-msg bot">
+                السلام علیکم! 👋<br>
+                میں آپ کا AI اسسٹنٹ ہوں۔ آپ ویب سائٹ کے بارے میں کچھ بھی پوچھ سکتے ہیں — جیسے ویڈیوز، لنکس، دارالافتاء، کانٹیکٹ، پوسٹس، وغیرہ۔
+            </div>
+        </div>
+        <div class="ai-suggestions" id="aiSuggestions">
+            <button class="ai-suggestion-chip" data-q="Contact">📞 Contact</button>
+            <button class="ai-suggestion-chip" data-q="Daruliftah">⚖️ Daruliftah</button>
+            <button class="ai-suggestion-chip" data-q="Videos">🎥 Videos</button>
+            <button class="ai-suggestion-chip" data-q="Books">📚 Books</button>
+            <button class="ai-suggestion-chip" data-q="Posts">📝 Posts</button>
+        </div>
+        <div class="ai-chat-input-area">
+            <input type="text" id="aiUserInput" placeholder="یہاں سوال لکھیں..." autocomplete="off">
+            <button class="ai-send-btn" id="aiSendBtn">➤</button>
+        </div>
+    </div>
+</div>
+<!-- ========== AI SEARCH END ========== -->
+
+<script>
+    // ========== FIREBASE CONFIG ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyBtwg9tjN8Jxp7orDpLWruTAmKPkIClG0U",
+        authDomain: "fareed-mustafai-vercel-website.firebaseapp.com",
+        databaseURL: "https://fareed-mustafai-vercel-website-default-rtdb.firebaseio.com",
+        projectId: "fareed-mustafai-vercel-website",
+        storageBucket: "fareed-mustafai-vercel-website.firebasestorage.app",
+        messagingSenderId: "939035629284",
+        appId: "1:939035629284:web:12db8268e193143767fef1"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // ========== LOAD POSTS ==========
+    function loadPosts() {
+        const container = document.getElementById('postsContainer');
+        if (!container) return;
+        
+        database.ref('posts').orderByChild('timestamp').limitToLast(20).once('value').then((snapshot) => {
+            const posts = snapshot.val() || {};
+            let html = '';
+            let count = 0;
+            const keys = Object.keys(posts).sort((a, b) => (posts[b].timestamp || 0) - (posts[a].timestamp || 0));
+            if (keys.length === 0) {
+                html = '<p style="color:#999;">کوئی پوسٹس نہیں ہیں۔</p>';
+            } else {
+                keys.forEach((key) => {
+                    const post = posts[key];
+                    count++;
+                    html += `<div class="post-item"><div class="post-title">${count}. ${post.title || 'No Title'}</div><div class="post-content">${post.content || 'No Content'}</div></div>`;
+                });
+            }
+            container.innerHTML = html;
+        }).catch((error) => {
+            container.innerHTML = '<p style="color:red;">❌ پوسٹس لوڈ کرنے میں خرابی</p>';
+        });
+    }
+
+    // ========== LOAD FIREBASE PAGES IN NAV ==========
+    function loadFirebasePages() {
+        const nav = document.getElementById('mainNav');
+        
+        database.ref('pages').once('value').then((snapshot) => {
+            const pages = snapshot.val() || {};
+            
+            const existingLinks = nav.querySelectorAll('a');
+            const existingIds = [];
+            existingLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    existingIds.push(href.replace('#', ''));
+                }
+            });
+            
+            for (const [id, page] of Object.entries(pages)) {
+                if (!existingIds.includes(id) && page.title) {
+                    const newLink = document.createElement('a');
+                    newLink.href = '#' + id;
+                    newLink.textContent = page.title;
+                    const adminLink = nav.querySelector('a[href="../admin.html"]');
+                    if (adminLink) {
+                        nav.insertBefore(newLink, adminLink);
+                    } else {
+                        nav.appendChild(newLink);
+                    }
+                }
+            }
+            
+        }).catch((error) => {
+            console.error("Error loading pages:", error);
+        });
+    }
+
+    // ========== SHOW DYNAMIC PAGE ==========
+    function showDynamicPage(hash) {
+        database.ref('pages').once('value').then((snapshot) => {
+            const pages = snapshot.val() || {};
+            
+            if (pages[hash]) {
+                let targetEl = document.getElementById(hash);
+                if (!targetEl) {
+                    const container = document.querySelector('.container');
+                    const newDiv = document.createElement('div');
+                    newDiv.id = hash;
+                    newDiv.className = 'dynamic-page';
+                    container.appendChild(newDiv);
+                    targetEl = newDiv;
+                }
+                targetEl.innerHTML = `<h2>${pages[hash].title || 'Page'}</h2><div>${pages[hash].content || ''}</div>`;
+                targetEl.style.display = 'block';
+                targetEl.classList.add('active');
+            }
+        }).catch((error) => {
+            console.error("Error showing dynamic page:", error);
+        });
+    }
+
+    // ========== HANDLE HASH CHANGE ==========
+    window.addEventListener('hashchange', function() {
+        const hash = window.location.hash.replace('#', '');
+        
+        document.querySelectorAll('.post').forEach(el => {
+            el.classList.remove('active');
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('.dynamic-page').forEach(el => {
+            el.classList.remove('active');
+            el.style.display = 'none';
+        });
+        
+        const targetEl = document.getElementById(hash);
+        if (targetEl && targetEl.classList.contains('post')) {
+            targetEl.style.display = 'block';
+            targetEl.classList.add('active');
+        } else {
+            showDynamicPage(hash);
+        }
+        
+        document.querySelectorAll('.nav a').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + hash) {
+                link.classList.add('active');
+                link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+        });
+        
+        if (hash === 'posts') {
+            loadPosts();
+        }
+    });
+
+    // ========== DOM READY ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFirebasePages();
+        
+        if (window.location.hash === '#posts') {
+            loadPosts();
+        }
+        
+        const hash = window.location.hash.replace('#', '');
+        if (hash) {
+            const defaultIds = ['about','darulifta','board','tech','packages','contact','privacy','terms','services','product','jamiah','tiktok','daaru','videos','darulifta-videos','other-videos','vercel','dailymotion','jawahir','allinfo','islamicdate','books','ahlesunnatboard','gmail','idswebsite','posts'];
+            if (!defaultIds.includes(hash)) {
+                document.querySelectorAll('.post').forEach(el => {
+                    el.style.display = 'none';
+                });
+                showDynamicPage(hash);
+            }
+        }
+    });
+
+    // ========== AI SEARCH LOGIC (UPDATED) ==========
+    (function() {
+        const floatBtn = document.getElementById('aiFloatBtn');
+        const overlay = document.getElementById('aiModalOverlay');
+        const closeBtn = document.getElementById('aiCloseBtn');
+        const sendBtn = document.getElementById('aiSendBtn');
+        const userInput = document.getElementById('aiUserInput');
+        const messagesBox = document.getElementById('aiChatMessages');
+        const suggestions = document.getElementById('aiSuggestions');
+
+        // ===== Build knowledge base from the page =====
+        function collectStaticData() {
+            const data = [];
+            document.querySelectorAll('.post').forEach(post => {
+                const id = post.id || '';
+                const titleEl = post.querySelector('h2, h3');
+                const title = titleEl ? titleEl.innerText.trim() : id;
+                const clone = post.cloneNode(true);
+                clone.querySelectorAll('script, style').forEach(el => el.remove());
+                const text = clone.innerText.replace(/\s+/g, ' ').trim();
+                const links = [];
+                clone.querySelectorAll('a').forEach(a => {
+                    const href = a.getAttribute('href') || '';
+                    const label = a.innerText.trim();
+                    if (href && href !== '#' && !href.startsWith('#')) {
+                        links.push({ label, href });
+                    }
+                });
+                if (text || links.length) {
+                    data.push({ id, title, text, links, source: 'HTML', targetHash: id });
+                }
+            });
+            return data;
+        }
+
+        // ===== Collect Firebase posts (admin-added) =====
+        async function collectFirebaseData() {
+            const out = [];
+            try {
+                const postsSnap = await database.ref('posts').once('value');
+                const posts = postsSnap.val() || {};
+                Object.entries(posts).forEach(([key, post]) => {
+                    out.push({
+                        id: 'post-' + key,
+                        title: post.title || 'Post',
+                        text: (post.title || '') + ' ' + (post.content || ''),
+                        links: [],
+                        source: 'Admin Posts',
+                        targetHash: 'posts'
+                    });
+                });
+                const pagesSnap = await database.ref('pages').once('value');
+                const pages = pagesSnap.val() || {};
+                Object.entries(pages).forEach(([id, page]) => {
+                    out.push({
+                        id: 'page-' + id,
+                        title: page.title || id,
+                        text: (page.title || '') + ' ' + (page.content || '').replace(/<[^>]+>/g, ' '),
+                        links: [],
+                        source: 'Admin Pages',
+                        targetHash: id
+                    });
+                });
+            } catch (e) {
+                console.warn('Firebase data load failed:', e);
+            }
+            return out;
+        }
+
+        // ===== Search =====
+        function normalize(s) {
+            return (s || '').toString().toLowerCase().trim();
+        }
+
+        function searchKnowledge(query, allData) {
+            const q = normalize(query);
+            if (!q) return [];
+            const words = q.split(/\s+/).filter(w => w.length > 1);
+            const results = [];
+            allData.forEach(item => {
+                const titleN = normalize(item.title);
+                const textN = normalize(item.text);
+                let score = 0;
+                if (titleN.includes(q)) score += 10;
+                if (textN.includes(q)) score += 5;
+                words.forEach(w => {
+                    if (titleN.includes(w)) score += 4;
+                    if (textN.includes(w)) score += 2;
+                });
+                (item.links || []).forEach(l => {
+                    const ln = normalize(l.label);
+                    if (ln.includes(q)) score += 4;
+                    words.forEach(w => { if (ln.includes(w)) score += 2; });
+                });
+                if (score > 0) results.push({ ...item, score });
+            });
+            results.sort((a, b) => b.score - a.score);
+            return results.slice(0, 5);
+        }
+
+        // ===== Format answer (with clickable headings) =====
+        function formatAnswer(query, results) {
+            if (!results.length) {
+                return 'معذرت، مجھے اس سوال کا جواب ویب سائٹ کے مواد میں نہیں ملا۔ براہ کرم دوسرے الفاظ میں پوچھیں، یا <a href="#contact" onclick="document.getElementById(\'aiModalOverlay\').classList.remove(\'active\');">Contact</a> سیکشن دیکھیں۔';
+            }
+            let html = '';
+            results.forEach((r, i) => {
+                const snippet = r.text.length > 260 ? r.text.slice(0, 260) + '…' : r.text;
+                const border = i < results.length - 1 ? 'border-bottom:1px dashed #cfe9e2;' : '';
+                html += `<div class="ai-result-item" style="${border}">`;
+                // clickable heading
+                html += `<a class="ai-result-heading" data-hash="${r.targetHash || r.id}" title="یہاں کلک کریں">${r.title}</a>`;
+                html += `<span style="font-size:0.75rem;color:#888;margin-right:6px;">(${r.source})</span><br>`;
+                html += `<span style="font-size:0.9rem;">${snippet}</span>`;
+                if (r.links && r.links.length) {
+                    html += '<div style="margin-top:5px;">';
+                    r.links.slice(0, 4).forEach(l => {
+                        html += `<a href="${l.href}" target="_blank" style="display:inline-block;margin:2px 4px 2px 0;font-size:0.82rem;">🔗 ${l.label || l.href}</a>`;
+                    });
+                    html += '</div>';
+                }
+                html += '</div>';
+            });
+            html += `<div style="font-size:0.8rem;color:#888;margin-top:6px;">🔍 "${query}" کے لیے ${results.length} نتیجے ملے — عنوان پر کلک کریں</div>`;
+            return html;
+        }
+
+        // ===== UI helpers =====
+        function addMessage(html, who) {
+            const div = document.createElement('div');
+            div.className = 'ai-msg ' + who;
+            div.innerHTML = html;
+            messagesBox.appendChild(div);
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+            return div;
+        }
+
+        function showTyping() {
+            const t = document.createElement('div');
+            t.className = 'ai-typing';
+            t.innerHTML = '<span></span><span></span><span></span>';
+            t.id = 'aiTypingIndicator';
+            messagesBox.appendChild(t);
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+        }
+        function hideTyping() {
+            const t = document.getElementById('aiTypingIndicator');
+            if (t) t.remove();
+        }
+
+        // ===== Main send =====
+        let cachedData = null;
+
+        async function handleSend() {
+            const q = userInput.value.trim();
+            if (!q) return;
+            addMessage(q, 'user');
+            userInput.value = '';
+            sendBtn.disabled = true;
+            showTyping();
+
+            try {
+                if (!cachedData) {
+                    const htmlData = collectStaticData();
+                    const fbData = await collectFirebaseData();
+                    cachedData = [...htmlData, ...fbData];
+                }
+                await new Promise(r => setTimeout(r, 350));
+                const results = searchKnowledge(q, cachedData);
+                hideTyping();
+                addMessage(formatAnswer(q, results), 'bot');
+            } catch (e) {
+                hideTyping();
+                addMessage('❌ معذرت، کچھ خرابی پیش آئی۔ دوبارہ کوشش کریں۔', 'bot');
+                console.error(e);
+            } finally {
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        // ===== Click on result heading → navigate =====
+        messagesBox.addEventListener('click', function(e) {
+            const heading = e.target.closest('.ai-result-heading');
+            if (heading) {
+                const hash = heading.getAttribute('data-hash');
+                if (hash) {
+                    overlay.classList.remove('active');
+                    // navigate
+                    window.location.hash = '#' + hash;
+                    // if hash didn't change (same page), force trigger
+                    if (window.location.hash === '#' + hash) {
+                        // trigger manually if already on same hash
+                        setTimeout(() => {
+                            const evt = new Event('hashchange');
+                            window.dispatchEvent(evt);
+                        }, 50);
+                    }
+                }
+            }
+        });
+
+        // ===== Events =====
+        floatBtn.addEventListener('click', () => {
+            overlay.classList.add('active');
+            setTimeout(() => userInput.focus(), 200);
+            if (!cachedData) {
+                collectStaticData();
+                collectFirebaseData().then(fb => {
+                    cachedData = [...collectStaticData(), ...fb];
+                });
+            }
+        });
+        closeBtn.addEventListener('click', () => overlay.classList.remove('active'));
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.classList.remove('active');
+        });
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+        suggestions.addEventListener('click', (e) => {
+            if (e.target.classList.contains('ai-suggestion-chip')) {
+                userInput.value = e.target.getAttribute('data-q');
+                handleSend();
+            }
+        });
+    })();
+</script>
+<!-- ========== AI SEARCH END ========== -->
+
+</body>
+</html>
